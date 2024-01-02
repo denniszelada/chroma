@@ -356,8 +356,7 @@ class ONNXMiniLM_L6_V2(EmbeddingFunction[Documents]):
         # breaks typechecking, thus the ignores.
         # convert the list to set for unique values
         if preferred_providers and not all(
-            [isinstance(i, str) for i in preferred_providers]
-        ):
+            isinstance(i, str) for i in preferred_providers):
             raise ValueError("Preferred providers must be a list of strings")
         # check for duplicate providers
         if preferred_providers and len(preferred_providers) != len(
