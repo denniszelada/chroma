@@ -26,8 +26,8 @@ class PulsarAdmin:
         path = f"/admin/v2/tenants/{tenant}"
         url = self._connection_str + path
         response = requests.put(
-            url, json={"allowedClusters": ["standalone"], "adminRoles": []}
-        )  # TODO: how to manage clusters?
+            url, json={"allowedClusters": ["standalone"], "adminRoles": []}, 
+        timeout=60)  # TODO: how to manage clusters?
 
         if response.status_code != 204 and response.status_code != 409:
             raise RuntimeError(f"Failed to create tenant {tenant}")
@@ -37,7 +37,7 @@ class PulsarAdmin:
 
         path = f"/admin/v2/namespaces/{tenant}/{namespace}"
         url = self._connection_str + path
-        response = requests.put(url)
+        response = requests.put(url, timeout=60)
 
         if response.status_code != 204 and response.status_code != 409:
             raise RuntimeError(f"Failed to create namespace {namespace}")
@@ -56,7 +56,7 @@ class PulsarAdmin:
         # Make a PUT request to the admin api to create the topic
         path = f"/admin/v2/persistent/{tenant}/{namespace}/{topic_name}"
         url = self._connection_str + path
-        response = requests.put(url)
+        response = requests.put(url, timeout=60)
 
         if response.status_code != 204 and response.status_code != 409:
             raise RuntimeError(f"Failed to create topic {topic_name}")
@@ -76,6 +76,6 @@ class PulsarAdmin:
         # Force delete the topic
         path += "?force=true"
         url = self._connection_str + path
-        response = requests.delete(url)
+        response = requests.delete(url, timeout=60)
         if response.status_code != 204 and response.status_code != 409:
             raise RuntimeError(f"Failed to delete topic {topic_name}")

@@ -194,7 +194,7 @@ def test_pre_flight_checks(api):
     if not isinstance(api, FastAPI):
         pytest.skip("Not a FastAPI instance")
 
-    resp = requests.get(f"{api._api_url}/pre-flight-checks")
+    resp = requests.get(f"{api._api_url}/pre-flight-checks", timeout=60)
     assert resp.status_code == 200
     assert resp.json() is not None
     assert "max_batch_size" in resp.json().keys()
