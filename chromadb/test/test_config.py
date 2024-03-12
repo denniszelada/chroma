@@ -1,7 +1,7 @@
 from chromadb.config import Component, System, Settings
 from overrides import overrides
 from threading import local
-import random
+import secrets
 
 data = local()  # use thread local just in case tests ever run in parallel
 
@@ -149,9 +149,9 @@ def test_system_override_order() -> None:
     # working and not just implicitly working because of insertion order.
 
     # This causes the test to actually fail if the deps are not wired up correctly.
-    random.seed(0)
+    secrets.SystemRandom().seed(0)
     entries = list(system._instances.items())
-    random.shuffle(entries)
+    secrets.SystemRandom().shuffle(entries)
     system._instances = {k: v for k, v in entries}
 
     system.start()
