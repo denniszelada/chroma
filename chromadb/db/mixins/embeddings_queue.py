@@ -371,9 +371,7 @@ class SqlEmbeddingsQueue(SqlDB, Producer, Consumer):
                 self.unsubscribe(sub.id)
         except BaseException as e:
             logger.error(
-                f"Exception occurred invoking consumer for subscription {sub.id.hex}"
-                + f"to topic {sub.topic_name} %s",
-                str(e),
+                "%s%s", f"Exception occurred invoking consumer for subscription {sub.id.hex}", f"to topic {sub.topic_name} %s", str(e),
             )
             if _called_from_test:
                 raise e
