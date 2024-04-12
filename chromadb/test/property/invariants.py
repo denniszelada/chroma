@@ -166,7 +166,7 @@ def _exact_distances(
 def is_metadata_valid(normalized_record_set: NormalizedRecordSet) -> bool:
     if normalized_record_set["metadatas"] is None:
         return True
-    return not any([len(m) == 0 for m in normalized_record_set["metadatas"]])
+    return not any(len(m) == 0 for m in normalized_record_set["metadatas"])
 
 
 def ann_accuracy(

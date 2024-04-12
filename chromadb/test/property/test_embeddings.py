@@ -340,7 +340,7 @@ def test_query_without_add(api: ServerAPI) -> None:
     for field in fields:
         field_results = results[field]
         assert field_results is not None
-        assert all([len(result) == 0 for result in field_results])
+        assert all(len(result) == 0 for result in field_results)
 
 
 def test_get_non_existent(api: ServerAPI) -> None:
