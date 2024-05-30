@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from chromadb.utils.embedding_functions import (
     DefaultEmbeddingFunction,
 )
+import math
 
 persist_dir = tempfile.mkdtemp()
 
@@ -502,7 +503,7 @@ def test_metadata_add_get_int_float(api):
 
     items = collection.get(ids=["id1", "id2"])
     assert items["metadatas"][0]["int_value"] == 1
-    assert items["metadatas"][0]["float_value"] == 1.001
+    assert math.isclose(items["metadatas"][0]["float_value"], 1.001, rel_tol=1e-09, abs_tol=0.0)
     assert items["metadatas"][1]["int_value"] == 2
     assert type(items["metadatas"][0]["int_value"]) == int
     assert type(items["metadatas"][0]["float_value"]) == float
@@ -518,7 +519,7 @@ def test_metadata_add_query_int_float(api):
     )
     assert items["metadatas"] is not None
     assert items["metadatas"][0][0]["int_value"] == 1
-    assert items["metadatas"][0][0]["float_value"] == 1.001
+    assert math.isclose(items["metadatas"][0][0]["float_value"], 1.001, rel_tol=1e-09, abs_tol=0.0)
     assert type(items["metadatas"][0][0]["int_value"]) == int
     assert type(items["metadatas"][0][0]["float_value"]) == float
 
@@ -551,7 +552,7 @@ def test_metadata_get_where_float(api):
     items = collection.get(where={"float_value": 1.001})
     assert items["metadatas"][0]["int_value"] == 1
     assert items["metadatas"][0]["string_value"] == "one"
-    assert items["metadatas"][0]["float_value"] == 1.001
+    assert math.isclose(items["metadatas"][0]["float_value"], 1.001, rel_tol=1e-09, abs_tol=0.0)
 
 
 def test_metadata_update_get_int_float(api):
@@ -566,7 +567,7 @@ def test_metadata_update_get_int_float(api):
     items = collection.get(ids=["id1"])
     assert items["metadatas"][0]["int_value"] == 2
     assert items["metadatas"][0]["string_value"] == "two"
-    assert items["metadatas"][0]["float_value"] == 2.002
+    assert math.isclose(items["metadatas"][0]["float_value"], 2.002, rel_tol=1e-09, abs_tol=0.0)
 
 
 bad_metadata_records = {
