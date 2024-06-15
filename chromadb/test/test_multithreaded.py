@@ -1,6 +1,5 @@
 import multiprocessing
 from concurrent.futures import Future, ThreadPoolExecutor, wait
-import random
 import threading
 from typing import Any, Dict, List, Optional, Set, Tuple, cast
 import numpy as np
@@ -10,11 +9,12 @@ import chromadb.test.property.invariants as invariants
 from chromadb.test.property.strategies import RecordSet
 from chromadb.test.property.strategies import test_hnsw_config
 from chromadb.types import Metadata
+import secrets
 
 
 def generate_data_shape() -> Tuple[int, int]:
-    N = random.randint(10, 10000)
-    D = random.randint(10, 256)
+    N = secrets.SystemRandom().randint(10, 10000)
+    D = secrets.SystemRandom().randint(10, 256)
     return (N, D)
 
 
@@ -54,7 +54,7 @@ def _test_multithreaded_add(api: ServerAPI, N: int, D: int, num_workers: int) ->
         total_sent = -1
         while total_sent < len(ids):
             # Randomly grab up to 10% of the dataset and send it to the executor
-            batch_size = random.randint(1, N // 10)
+            batch_size = secrets.SystemRandom().randint(1, N // 10)
             to_send = min(batch_size, len(ids) - total_sent)
             start = total_sent + 1
             end = total_sent + to_send + 1
@@ -85,7 +85,7 @@ def _test_multithreaded_add(api: ServerAPI, N: int, D: int, num_workers: int) ->
 
     # Check that the ANN accuracy is good
     # On a random subset of the dataset
-    query_indices = random.sample([i for i in range(N)], 10)
+    query_indices = secrets.SystemRandom().sample([i for i in range(N)], 10)
     n_results = 5
     invariants.ann_accuracy(
         coll,
@@ -153,8 +153,7 @@ def _test_interleaved_add_query(
             # queries and adds. We cannot do so without a lock and serializing the operations
             # which would defeat the purpose of this test. Instead we interleave queries and
             # adds and check the invariants at the end
-            query_indices = random.sample(
-                currently_added_indices,
+            query_indices = secrets.SystemRandom().sample(currently_added_indices,
                 min(10, len(currently_added_indices)),
             )
             query_vectors = [embeddings[i] for i in query_indices]
@@ -168,10 +167,10 @@ def _test_interleaved_add_query(
         futures: List[Future[Any]] = []
         total_sent = -1
         while total_sent < len(ids) - 1:
-            operation = random.randint(0, 2)
+            operation = secrets.SystemRandom().randint(0, 2)
             if operation == 0:
                 # Randomly grab up to 10% of the dataset and send it to the executor
-                batch_size = random.randint(1, N // 10)
+                batch_size = secrets.SystemRandom().randint(1, N // 10)
                 to_send = min(batch_size, len(ids) - total_sent)
                 start = total_sent + 1
                 end = total_sent + to_send + 1
@@ -199,7 +198,7 @@ def _test_interleaved_add_query(
     invariants.no_duplicates(coll)
     # Check that the ANN accuracy is good
     # On a random subset of the dataset
-    query_indices = random.sample([i for i in range(N)], 10)
+    query_indices = secrets.SystemRandom().sample([i for i in range(N)], 10)
     n_results = 5
     invariants.ann_accuracy(
         coll,
@@ -211,13 +210,13 @@ def _test_interleaved_add_query(
 
 def test_multithreaded_add(api: ServerAPI) -> None:
     for i in range(3):
-        num_workers = random.randint(2, multiprocessing.cpu_count() * 2)
+        num_workers = secrets.SystemRandom().randint(2, multiprocessing.cpu_count() * 2)
         N, D = generate_data_shape()
         _test_multithreaded_add(api, N, D, num_workers)
 
 
 def test_interleaved_add_query(api: ServerAPI) -> None:
     for i in range(3):
-        num_workers = random.randint(2, multiprocessing.cpu_count() * 2)
+        num_workers = secrets.SystemRandom().randint(2, multiprocessing.cpu_count() * 2)
         N, D = generate_data_shape()
         _test_interleaved_add_query(api, N, D, num_workers)

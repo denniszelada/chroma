@@ -1,4 +1,5 @@
 import pulsar
+import secrets
 
 
 def pulsar_to_int(message_id: pulsar.MessageId) -> int:
@@ -67,12 +68,11 @@ def str_to_int(s: str) -> int:
 # 1m in 5 seconds on a M1 Pro
 # Not fast, but not likely to be a bottleneck either
 def _benchmark() -> None:
-    import random
     import time
 
     t0 = time.time()
     for i in range(1000000):
-        x = random.randint(0, 2**192 - 1)
+        x = secrets.SystemRandom().randint(0, 2**192 - 1)
         s = int_to_str(x)
         if s == "!":  # prevent compiler from optimizing out
             print("oops")
