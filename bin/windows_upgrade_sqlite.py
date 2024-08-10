@@ -10,7 +10,7 @@ DLL_URL = "https://www.sqlite.org/2023/sqlite-dll-win64-x64-3420000.zip"
 
 if __name__ == "__main__":
     # Download and extract the DLL
-    r = requests.get(DLL_URL)
+    r = requests.get(DLL_URL, timeout=60)
     z = zipfile.ZipFile(io.BytesIO(r.content))
     z.extractall(".")
     # Print current Python path
