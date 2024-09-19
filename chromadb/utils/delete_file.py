@@ -1,7 +1,7 @@
 import os
-import random
 import gc
 import time
+import secrets
 
 
 # Borrowed from https://github.com/rogerbinns/apsw/blob/master/apsw/tests.py#L224
@@ -15,7 +15,7 @@ def delete_file(name: str) -> None:
         pass
 
     chars = list("abcdefghijklmn")
-    random.shuffle(chars)
+    secrets.SystemRandom().shuffle(chars)
     newname = name + "-n-" + "".join(chars)
     count = 0
     while os.path.exists(name):
@@ -25,7 +25,7 @@ def delete_file(name: str) -> None:
         except Exception:
             if count > 30:
                 n = list("abcdefghijklmnopqrstuvwxyz")
-                random.shuffle(n)
+                secrets.SystemRandom().shuffle(n)
                 final_name = "".join(n)
                 try:
                     os.rename(

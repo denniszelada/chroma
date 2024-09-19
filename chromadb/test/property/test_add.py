@@ -1,6 +1,4 @@
-import random
 import uuid
-from random import randint
 from typing import cast, List, Any, Dict
 import pytest
 import hypothesis.strategies as st
@@ -10,6 +8,7 @@ from chromadb.api.types import Embeddings, Metadatas
 import chromadb.test.property.strategies as strategies
 import chromadb.test.property.invariants as invariants
 from chromadb.utils.batch_utils import create_batches
+import secrets
 
 collection_st = st.shared(strategies.collections(with_hnsw_params=True), key="coll")
 
@@ -52,7 +51,7 @@ def create_large_recordset(
     min_size: int = 45000,
     max_size: int = 50000,
 ) -> strategies.RecordSet:
-    size = randint(min_size, max_size)
+    size = secrets.SystemRandom().randint(min_size, max_size)
 
     ids = [str(uuid.uuid4()) for _ in range(size)]
     metadatas = [{"some_key": f"{i}"} for i in range(size)]
@@ -73,7 +72,7 @@ def test_add_large(api: ServerAPI, collection: strategies.Collection) -> None:
     api.reset()
     record_set = create_large_recordset(
         min_size=api.max_batch_size,
-        max_size=api.max_batch_size + int(api.max_batch_size * random.random()),
+        max_size=api.max_batch_size + int(api.max_batch_size * secrets.SystemRandom().random()),
     )
     coll = api.create_collection(
         name=collection.name,
@@ -103,7 +102,7 @@ def test_add_large_exceeding(api: ServerAPI, collection: strategies.Collection) 
     api.reset()
     record_set = create_large_recordset(
         min_size=api.max_batch_size,
-        max_size=api.max_batch_size + int(api.max_batch_size * random.random()),
+        max_size=api.max_batch_size + int(api.max_batch_size * secrets.SystemRandom().random()),
     )
     coll = api.create_collection(
         name=collection.name,

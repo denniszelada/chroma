@@ -1,5 +1,4 @@
 import json
-import random
 import string
 from typing import Dict, Any, Tuple
 import uuid
@@ -12,6 +11,7 @@ from chromadb.api import AdminAPI, ServerAPI
 from chromadb.api.models.Collection import Collection
 from chromadb.config import DEFAULT_DATABASE, DEFAULT_TENANT, Settings, System
 from chromadb.test.conftest import _fastapi_fixture
+import secrets
 
 
 valid_action_space = [
@@ -52,7 +52,7 @@ def master_user(draw: st.DrawFn) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         "tenant": DEFAULT_TENANT,
         "tokens": [
             {
-                "token": f"{random.randint(1,1000000)}_"
+                "token": f"{secrets.SystemRandom().randint(1,1000000)}_"
                 + draw(
                     st.text(
                         alphabet=string.ascii_letters + string.digits,
@@ -117,7 +117,7 @@ def user_role_config(draw: st.DrawFn) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         "tenant": DEFAULT_TENANT,
         "tokens": [
             {
-                "token": f"{random.randint(1,1000000)}_"
+                "token": f"{secrets.SystemRandom().randint(1,1000000)}_"
                 + draw(
                     st.text(
                         alphabet=string.ascii_letters + string.digits,
@@ -280,13 +280,12 @@ def test_authz(token_config: Dict[str, Any], rbac_config: Dict[str, Any]) -> Non
     authz_config = rbac_config
     token_config["chroma_server_authz_config"] = rbac_config
     token_config["chroma_server_auth_credentials"] = json.dumps(rbac_config["users"])
-    random_user = random.choice(
-        [user for user in authz_config["users"] if user["id"] != "__master__"]
+    random_user = secrets.choice([user for user in authz_config["users"] if user["id"] != "__master__"]
     )
     _master_user = [
         user for user in authz_config["users"] if user["id"] == "__master__"
     ][0]
-    random_token = random.choice(random_user["tokens"])["token"]
+    random_token = secrets.choice(random_user["tokens"])["token"]
     api = _fastapi_fixture(
         is_persistent=token_config["is_persistent"],
         chroma_server_auth_provider=token_config["chroma_server_auth_provider"],
