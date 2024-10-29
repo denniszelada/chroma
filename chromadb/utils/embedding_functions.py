@@ -22,6 +22,7 @@ import importlib
 import inspect
 import sys
 from typing import Optional
+from security import safe_requests
 
 try:
     from chromadb.is_thin_client import is_thin_client
@@ -390,7 +391,7 @@ class ONNXMiniLM_L6_V2(EmbeddingFunction[Documents]):
     # Borrowed from https://gist.github.com/yanqd0/c13ed29e29432e3cf3e7c38467f42f51
     # Download with tqdm to preserve the sentence-transformers experience
     def _download(self, url: str, fname: str, chunk_size: int = 1024) -> None:
-        resp = requests.get(url, stream=True)
+        resp = safe_requests.get(url, stream=True)
         total = int(resp.headers.get("content-length", 0))
         with open(fname, "wb") as file, self.tqdm(
             desc=str(fname),
