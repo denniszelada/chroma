@@ -17,8 +17,8 @@ from chromadb.api.types import (
 import chromadb.test.property.strategies as strategies
 import hypothesis.strategies as st
 import logging
-import random
 import re
+import secrets
 
 
 def _filter_where_clause(clause: Where, metadata: Metadata) -> bool:
@@ -245,13 +245,13 @@ def test_filterable_metadata_query(
         assert normalized_record_set["embeddings"] is not None
         assert all(isinstance(e, list) for e in normalized_record_set["embeddings"])
         random_query = normalized_record_set["embeddings"][
-            random.randint(0, total_count - 1)
+            secrets.SystemRandom().randint(0, total_count - 1)
         ]
     else:
         assert isinstance(normalized_record_set["documents"], list)
         assert collection.embedding_function is not None
         random_query = collection.embedding_function(
-            [normalized_record_set["documents"][random.randint(0, total_count - 1)]]
+            [normalized_record_set["documents"][secrets.SystemRandom().randint(0, total_count - 1)]]
         )[0]
     for filter in filters:
         result_ids = set(
