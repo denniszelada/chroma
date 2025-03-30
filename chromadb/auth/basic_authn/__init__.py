@@ -1,5 +1,4 @@
 import base64
-import random
 import re
 import time
 import traceback
@@ -26,6 +25,7 @@ from chromadb.telemetry.opentelemetry import (
 
 
 from typing import Dict
+import secrets
 
 
 logger = logging.getLogger(__name__)
@@ -141,6 +141,6 @@ class BasicAuthenticationServerProvider(ServerAuthenticationProvider):
                 f"Failed to authenticate {type(e).__name__} at {filename}:{line_number}"
             )
         time.sleep(
-            random.uniform(0.001, 0.005)
+            secrets.SystemRandom().uniform(0.001, 0.005)
         )  # add some jitter to avoid timing attacks
         raise ChromaAuthError()

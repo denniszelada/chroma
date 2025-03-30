@@ -1,5 +1,4 @@
 import uuid
-from random import randint
 from typing import cast, List, Any, Dict
 import hypothesis
 import numpy as np
@@ -17,6 +16,7 @@ import chromadb.test.property.strategies as strategies
 import chromadb.test.property.invariants as invariants
 from chromadb.test.utils.wait_for_version_increase import wait_for_version_increase
 from chromadb.utils.batch_utils import create_batches
+import secrets
 
 
 collection_st = st.shared(strategies.collections(with_hnsw_params=True), key="coll")
@@ -153,7 +153,7 @@ def create_large_recordset(
     min_size: int = 45000,
     max_size: int = 50000,
 ) -> strategies.RecordSet:
-    size = randint(min_size, max_size)
+    size = secrets.SystemRandom().randint(min_size, max_size)
 
     ids = [str(uuid.uuid4()) for _ in range(size)]
     metadatas = [{"some_key": f"{i}"} for i in range(size)]

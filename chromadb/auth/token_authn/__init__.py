@@ -1,5 +1,4 @@
 import logging
-import random
 import re
 import string
 import time
@@ -25,6 +24,7 @@ from chromadb.telemetry.opentelemetry import (
     OpenTelemetryGranularity,
     trace_method,
 )
+import secrets
 
 T = TypeVar("T")
 
@@ -230,6 +230,6 @@ class TokenAuthenticationServerProvider(ServerAuthenticationProvider):
                 f"Failed to authenticate {type(e).__name__} at {filename}:{line_number}"
             )
         time.sleep(
-            random.uniform(0.001, 0.005)
+            secrets.SystemRandom().uniform(0.001, 0.005)
         )  # add some jitter to avoid timing attacks
         raise ChromaAuthError()

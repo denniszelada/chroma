@@ -3,7 +3,6 @@ import uuid
 import pytest
 import chromadb.test.property.strategies as strategies
 from unittest.mock import patch
-import random
 from hypothesis.stateful import (
     Bundle,
     RuleBasedStateMachine,
@@ -22,6 +21,7 @@ from chromadb.segment import SegmentManager
 from chromadb.types import SegmentScope
 from chromadb.db.system import SysDB
 from chromadb.config import System
+import secrets
 
 # Memory limit use for testing
 memory_limit = 100
@@ -106,7 +106,7 @@ class SegmentManagerStateMachine(RuleBasedStateMachine):
             self.sysdb.create_segment(segment)
             self.segment_collection[segment["id"]] = coll.id
         self.collection_created_counter += 1
-        self.collection_size_store[coll.id] = random.randint(0, memory_limit)
+        self.collection_size_store[coll.id] = secrets.SystemRandom().randint(0, memory_limit)
         return multiple(coll)
 
     @rule(coll=collections)

@@ -1,5 +1,4 @@
 import threading
-import random
 from typing import Callable, Dict, List, Optional, TypeVar
 import grpc
 from overrides import overrides
@@ -20,6 +19,7 @@ from tenacity import (
     retry_if_exception,
 )
 from opentelemetry.trace import Span
+import secrets
 
 
 def _clean_metadata(metadata: Optional[Metadata]) -> Optional[Metadata]:
@@ -223,7 +223,7 @@ class DistributedExecutor(Executor):
             scan.record, self._query_replication_factor
         )
         # Shuffle the grpc urls to distribute the load evenly
-        random.shuffle(grpc_urls)
+        secrets.SystemRandom().shuffle(grpc_urls)
         return grpc_urls
 
     def _get_stub(self, grpc_url: str) -> QueryExecutorStub:
