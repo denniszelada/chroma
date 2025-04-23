@@ -36,6 +36,7 @@ from pypika import Table
 import numpy as np
 
 from chromadb.utils.read_write_lock import ReadRWLock, WriteRWLock
+import fickling
 
 
 logger = logging.getLogger(__name__)
@@ -72,7 +73,7 @@ class PersistentData:
     def load_from_file(filename: str) -> "PersistentData":
         """Load persistent data from a file"""
         with open(filename, "rb") as f:
-            ret = cast(PersistentData, pickle.load(f))
+            ret = cast(PersistentData, fickling.load(f))
             return ret
 
 
