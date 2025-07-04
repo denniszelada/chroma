@@ -1,7 +1,6 @@
 # This tests a very minimal of test_add in test_add.py as a example based test
 # instead of a property based test. We can use the delta to get the property
 # test working and then enable
-import random
 import time
 from chromadb.api import ClientAPI
 from chromadb.test.conftest import (
@@ -14,6 +13,7 @@ from chromadb.test.utils.wait_for_version_increase import (
     get_collection_version,
 )
 import numpy as np
+import secrets
 
 
 @skip_if_not_cluster()
@@ -21,7 +21,7 @@ def test_add(
     client: ClientAPI,
 ) -> None:
     seed = time.time()
-    random.seed(seed)
+    secrets.SystemRandom().seed(seed)
     print("Generating data with seed ", seed)
     reset(client)
     collection = client.create_collection(
@@ -60,7 +60,7 @@ def test_add(
 @skip_if_not_cluster()
 def test_add_include_all_with_compaction_delay(client: ClientAPI) -> None:
     seed = time.time()
-    random.seed(seed)
+    secrets.SystemRandom().seed(seed)
     print("Generating data with seed ", seed)
     reset(client)
     collection = client.create_collection(
